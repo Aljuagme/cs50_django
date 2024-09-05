@@ -5,7 +5,7 @@ from django.urls import reverse
 from . import util
 from .util import get_entry
 
-
+# Trying to
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
