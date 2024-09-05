@@ -12,9 +12,11 @@ def index(request):
     })
 
 def wiki_page(request, title):
+    print("Title coming from post: ", title)
     if request.method == "GET":
         print("GET: ", title)
         title_content = get_entry(title)
+        print("GET: Title Content: ", title_content)
         if not title_content:
             raise Http404("Page not Found")
 
@@ -23,10 +25,11 @@ def wiki_page(request, title):
 
     elif request.method == "POST":
         title = request.POST.get("q")
-        print(title)
+        print("POST: ", title)
         title_content = get_entry(title)
+        print("POST: Title Content: ", title_content)
         if not title_content:
             return HttpResponseRedirect(reverse("encyclopedia:index"))
 
-        return HttpResponseRedirect(reverse("encyclopedia:wiki_page", title))
+        return HttpResponseRedirect(reverse("encyclopedia:wiki_page", args=[title]))
 

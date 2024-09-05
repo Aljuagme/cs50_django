@@ -12,7 +12,11 @@
         <div class="row">
             <div class="sidebar col-lg-2 col-md-3">
                 <h2>Wiki</h2>
+                {% if title %}
                 <form action="{% url 'encyclopedia:wiki_page' title %}" method="post">
+                {% else %}
+                <form action="{% url 'encyclopedia:wiki_page' 'dummy_title' %}" method="post">
+                {% endif %}
                     {% csrf_token %}
                     <input class="search" type="text" name="q" placeholder="Search Encyclopedia">
                 </form>
