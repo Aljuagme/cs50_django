@@ -1,3 +1,5 @@
+import re
+
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -29,7 +31,24 @@ def wiki_page(request, title):
         title_content = get_entry(title)
         print("POST: Title Content: ", title_content)
         if not title_content:
-            return HttpResponseRedirect(reverse("encyclopedia:index"))
+            print("Am I here?")
+            return entry(request, title)
 
         return HttpResponseRedirect(reverse("encyclopedia:wiki_page", args=[title]))
 
+
+def entry(request, title):
+    if request.method == "GET":
+        print("GET: ENTRY: ", title)
+        pass
+
+    if request.method == "POST":
+        print("POST: ENTRY: ", title)
+        entries = util.find_matching_entry(title)
+        print("Print en la entry de entries: ", entries)
+
+        if entries:
+            return render(request, "encyclopedia/index.html", {
+            "entries": entries})
+        else:
+            return HttpResponseRedirect(reverse("encyclopedia:index"))

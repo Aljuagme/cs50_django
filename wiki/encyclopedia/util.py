@@ -35,3 +35,17 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+
+
+def find_matching_entry(title):
+    matching_entries = []
+    entries = list_entries()
+
+    print("Printeando list_entries(): ", entries)
+
+    for e in entries:
+        if title in e:
+            matching_entries.append(e)
+            print(f"{e} -> {title}")
+    return matching_entries
+
