@@ -1,5 +1,7 @@
 import re
+import random
 
+from django import forms
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -7,7 +9,9 @@ from django.urls import reverse
 from . import util
 from .util import get_entry
 
-# Trying to
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label="Title")
+    content = forms.CharField(label="Content", widget=forms.Textarea)
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
@@ -52,3 +56,30 @@ def entry(request, title):
             "entries": entries})
         else:
             return HttpResponseRedirect(reverse("encyclopedia:index"))
+
+
+def new_page(request):
+    return render(request, "encyclopedia/new_page.html",
+                  {"new_entry": NewEntryForm()})
+
+
+def save_entry(request):
+    if request.method == "POST":
+        form = NewEntryForm(request.POST)
+        print("YEAH, the form: ", form)
+        title = form.cleaned_data["title"]
+        if title in util.list_entries():
+            raise Exception("Title Already Exists")
+
+        title = request.POST.get("title")
+        content = request.POST.get("content")
+
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("encyclopedia:wiki_page", args=[title]))
+
+
+def random_page(request):
+    entries = util.list_entries()
+    chosen = random.choice(entries)
+
+    return HttpResponseRedirect(reverse("encyclopedia:wiki_page", args=[chosen]))
